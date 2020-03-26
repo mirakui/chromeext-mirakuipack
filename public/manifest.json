@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Chrome Extension TypeScript Starter",
-  "description": "Chrome Extension, TypeScript, Visual Studio Code",
+  "name": "mirakuipack",
+  "description": "Chrome Extension for mirakui",
   "version": "1.0",
 
   "options_ui": {
@@ -16,18 +16,19 @@
   },
 
   "content_scripts": [
-      {
-          "matches": ["<all_urls>"],
-          "js": ["js/vendor.js", "js/content_script.js"]
-      }
+    {
+      "matches": ["*://*.amazon.co.jp/*"],
+      "js": ["js/amazon_shortener.js"]
+    },
+    {
+      "matches": ["*://*/*?*utm_source=*"],
+      "js": ["js/remove_query_strings.js"]
+    }
   ],
 
   "background": {
     "scripts": ["js/vendor.js", "js/background.js"]
   },
 
-  "permissions": [
-    "storage",
-    "<all_urls>"
-  ]
+  "permissions": ["storage", "<all_urls>"]
 }

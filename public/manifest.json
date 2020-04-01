@@ -21,8 +21,17 @@
       "js": ["js/amazon_shortener.js"]
     },
     {
-      "matches": ["*://*/*?*utm_source=*"],
+      "matches": [
+        "*://*/*?utm_source=*",
+        "*://*/*?*utm_source=*",
+        "*://*/*?fbclid=*",
+        "*://*/*?*&fbclid=*"
+      ],
       "js": ["js/remove_query_strings.js"]
+    },
+    {
+      "matches": ["*://*.zoom.us/j/*?status=success"],
+      "js": ["js/zoom_closer.js"]
     }
   ],
 

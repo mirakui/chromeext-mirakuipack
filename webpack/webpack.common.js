@@ -13,7 +13,8 @@ module.exports = {
     remove_query_strings: path.join(
       __dirname,
       srcDir + "remove_query_strings.ts"
-    )
+    ),
+    zoom_closer: path.join(__dirname, srcDir + "zoom_closer.ts")
   },
   output: {
     path: path.join(__dirname, "../dist/js"),

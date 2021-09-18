@@ -20,7 +20,7 @@
     "moment": "~2.24.0"
   },
   "devDependencies": {
-    "@types/chrome": "0.0.100",
+    "@types/chrome": "^0.0.157",
     "@types/jest": "^25.1.4",
     "@types/jquery": "^3.3.33",
     "@typescript-eslint/eslint-plugin": "^2.25.0",

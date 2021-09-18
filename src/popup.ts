@@ -4,26 +4,21 @@ import * as $ from 'jquery';
 let count = 0;
 
 function sortTabs(tabs: chrome.tabs.Tab[]) {
-  type TabListItem = {
-    arrayIndex: number;
-    tab: chrome.tabs.Tab;
-  }
-  let tabList: TabListItem[] = [];
+  let tabList: chrome.tabs.Tab[] = [];
   let tabIndexMap: number[] = [];
-  for (let i=0; i<tabs.length; i++) {
-    const tab = tabs[i];
+  for (let tab of tabs) {
     if (tab.pinned || tab.groupId > 0 || !tab.url) {
       continue;
     }
     else {
-      tabList.push({arrayIndex: i, tab: tab});
+      tabList.push(tab);
       tabIndexMap.push(tab.index);
     }
   }
 
-  tabList.sort((tab1: TabListItem, tab2: TabListItem) => {
-    const url1 = tab1.tab.url.toUpperCase();
-    const url2 = tab2.tab.url.toUpperCase();
+  tabList.sort((tab1: chrome.tabs.Tab, tab2: chrome.tabs.Tab) => {
+    const url1 = tab1.url.toUpperCase();
+    const url2 = tab2.url.toUpperCase();
     if (url1 < url2) { return -1; }
     else if (url2 < url1) { return 1; }
     else { return 0; }
@@ -32,9 +27,50 @@ function sortTabs(tabs: chrome.tabs.Tab[]) {
 
   for (let i=0; i<tabList.length; i++) {
     const tab = tabList[i];
-    const index = tabIndexMap[i];
-    chrome.tabs.move(tab.tab.id, {index: index});
+    // const index = tabIndexMap[i];
+    const index = i;
+    chrome.tabs.move(tab.id, {index: index});
   }
+}
+
+function uniqifyTabs(tabs: chrome.tabs.Tab[]) {
+  let urls: Set<string> = new Set;
+  for (let tab of tabs) {
+    if (tab.pinned || !tab.url) {
+      continue;
+    }
+    if (urls.has(tab.url)) {
+      chrome.tabs.remove(tab.id);
+    }
+    else {
+      urls.add(tab.url);
+    }
+  }
+}
+
+function removeUnnecessaryTabs(tabs: chrome.tabs.Tab[]) {
+  for (let tab of tabs) {
+    if (tab.pinned) {
+      continue;
+    }
+    if (!tab.url ||
+      tab.url.startsWith("https://www.google.com/search?") ||
+      tab.url.startsWith("https://login.microsoftonline.com/")
+    ) {
+      chrome.tabs.remove(tab.id);
+    }
+  }
+}
+
+function runTabGC() {
+  chrome.windows.getAll(async (windows) => {
+    for (let window of windows) {
+      chrome.tabs.query({ windowId: window.id }, (tabs: chrome.tabs.Tab[]) => {
+        sortTabs(tabs);
+        uniqifyTabs(tabs);
+      });
+    }
+  })
 }
 
 (() => {
@@ -64,13 +100,7 @@ function sortTabs(tabs: chrome.tabs.Tab[]) {
     });
   });
   $('#gc').click(() => {
-    chrome.windows.getAll(async (windows) => {
-      for (let window of windows) {
-        chrome.tabs.query({ windowId: window.id }, (tabs: chrome.tabs.Tab[]) => {
-          sortTabs(tabs);
-        });
-      }
-    })
+    runTabGC();
   });
 
 })();

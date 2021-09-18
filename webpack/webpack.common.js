@@ -5,12 +5,7 @@ const srcDir = "../src/";
 
 module.exports = {
   entry: {
-    amazon_shortener: path.join(__dirname, srcDir + "amazon_shortener.ts"),
-    remove_query_strings: path.join(
-      __dirname,
-      srcDir + "remove_query_strings.ts"
-    ),
-    zoom_closer: path.join(__dirname, srcDir + "zoom_closer.ts"),
+    content_script: path.join(__dirname, srcDir + "content_script.ts"),
   },
   output: {
     path: path.join(__dirname, "../dist/js"),

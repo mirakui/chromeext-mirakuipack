@@ -66,6 +66,7 @@ function runTabGC() {
   chrome.windows.getAll(async (windows) => {
     for (let window of windows) {
       chrome.tabs.query({ windowId: window.id }, (tabs: chrome.tabs.Tab[]) => {
+        removeUnnecessaryTabs(tabs);
         sortTabs(tabs);
         uniqifyTabs(tabs);
       });
